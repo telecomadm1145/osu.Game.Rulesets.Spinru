@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Spinru.Objects.Drawables
 
         public override bool HandlePositionalInput => true;
         private double Rotation = 0;
-        private double Rotation_2 = 0;
+        public double Rotation_2 = 0;
         public DrawableSpinruHitObject(SpinruHitObject hitObject)
             : base(hitObject)
         {

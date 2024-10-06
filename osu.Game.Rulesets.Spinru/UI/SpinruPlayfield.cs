@@ -12,6 +12,7 @@ using osu.Framework.Input.Events;
 using osu.Game.Rulesets.Judgements;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Spinru.Objects.Drawables;
 using osu.Game.Rulesets.UI;
 using osuTK.Graphics;
 
@@ -28,7 +29,7 @@ namespace osu.Game.Rulesets.Spinru.UI
         private readonly Container judgementAboveHitObjectLayer;
 
         public static float Rotation_G = 0;
-        public static Box InnerLine;
+        public static Container InnerLine;
         protected override GameplayCursorContainer CreateCursor() => new SpinruCursorContainer();
 
         public SpinruPlayfield()
@@ -50,7 +51,7 @@ namespace osu.Game.Rulesets.Spinru.UI
                 judgementAboveHitObjectLayer = new Container { RelativeSizeAxes = Axes.Both },
                 new Box(){
                     Anchor = Anchor.Centre,
-                    Origin = Anchor.CentreLeft,
+                    Origin = Anchor.Centre,
                     Size = new(20f,5f),
                     Position = new((-1.75f*384) / 2.0f,0),
                     Colour = Color4.White.Opacity(80),
@@ -58,20 +59,50 @@ namespace osu.Game.Rulesets.Spinru.UI
                 },
                 new Box(){
                     Anchor = Anchor.Centre,
-                    Origin = Anchor.CentreRight,
+                    Origin = Anchor.Centre,
                     Size = new(20f,5f),
                     Position = new((1.75f*384) / 2.0f,0),
                     Colour = Color4.White.Opacity(80),
                     RelativeSizeAxes = Axes.None,
                 },
-                InnerLine = new Box(){
+                InnerLine = new Container(){
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Size = new(1.75f,3f),
-                    Colour = Color4.White.Opacity(180),
-                    RelativeSizeAxes = Axes.X,
+                    RelativeSizeAxes = Axes.Both,
+                    Children = [
+                new Box(){
+                                        Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Size = new(50f),
+                                        Colour = Color4.Black.Opacity(150),
+                    RelativeSizeAxes = Axes.None,
+                    Rotation = 45,
+                }
+                        ]
                 }
             ];
+            var tick_v = 20;
+            for (int i = 0; i < 360 / tick_v; i++)
+            {
+                InnerLine.Add(
+                    new Container()
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Rotation = i * tick_v,
+                        Child =
+                    new Box()
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.CentreLeft,
+                        RelativeSizeAxes = Axes.None,
+                        Size = new(10f, 2f),
+                        Position = new((-1.75f * 384) / 2.0f, 0),
+                        Colour = Color4.White.Opacity(200),
+                    }
+                    }
+                    );
+            }
             HitObjectContainer.Anchor = Anchor.Centre;
             HitObjectContainer.Origin = Anchor.Centre;
             AddInternal(judgementPooler = new([
@@ -95,6 +126,11 @@ namespace osu.Game.Rulesets.Spinru.UI
         protected override void Update()
         {
             Rotation_G = InnerLine.Rotation = (MathF.Atan2(y, x) / MathF.PI) * 180.0f;
+            // 从 HitObjectContainer读取hitobject
+            //foreach (DrawableSpinruHitObject obj in HitObjectContainer.Objects)
+            //{
+            //    // obj.Rotation_2; // 旋转（角度）
+            //}
             base.Update();
         }
         protected override bool OnMouseMove(MouseMoveEvent e)
