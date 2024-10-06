@@ -45,14 +45,19 @@ namespace osu.Game.Rulesets.Spinru.UI
                         RelativeSizeAxes = Axes.Both,
                     }
                 ,
+                new RotateInputHandler(){
+                                            Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Size = new(5f),
+                        RelativeSizeAxes = Axes.Both,
+                },                judgementLayer = new JudgementContainer<DrawableSpinruJudgement> { RelativeSizeAxes = Axes.Both },
 
-                judgementLayer = new JudgementContainer<DrawableSpinruJudgement> { RelativeSizeAxes = Axes.Both },
                 HitObjectContainer,
                 judgementAboveHitObjectLayer = new Container { RelativeSizeAxes = Axes.Both },
                 new Box(){
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Size = new(20f,5f),
+                    Size = new(10f,40f),
                     Position = new((-1.75f*384) / 2.0f,0),
                     Colour = Color4.White.Opacity(80),
                     RelativeSizeAxes = Axes.None,
@@ -60,7 +65,7 @@ namespace osu.Game.Rulesets.Spinru.UI
                 new Box(){
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Size = new(20f,5f),
+                    Size = new(10f,40f),
                     Position = new((1.75f*384) / 2.0f,0),
                     Colour = Color4.White.Opacity(80),
                     RelativeSizeAxes = Axes.None,
@@ -117,27 +122,32 @@ namespace osu.Game.Rulesets.Spinru.UI
             NewResult += onNewResult;
         }
 
+        private partial class RotateInputHandler : Drawable
+        {
+            public override bool HandlePositionalInput => true;
+            private float x, y;
+            protected override void Update()
+            {
+                Rotation_G = InnerLine.Rotation = (MathF.Atan2(y, x) / MathF.PI) * 180.0f;
+                // 从 HitObjectContainer读取hitobject
+                //foreach (DrawableSpinruHitObject obj in HitObjectContainer.Objects)
+                //{
+                //    // obj.Rotation_2; // 旋转（角度）
+                //}
+                base.Update();
+            }
+
+            protected override bool OnMouseMove(MouseMoveEvent e)
+            {
+                x = e.MousePosition.X - 192.0f;
+                y = e.MousePosition.Y - 192.0f;
+                return base.OnMouseMove(e);
+            }
+        }
+
         [BackgroundDependencyLoader]
         private void load()
         {
-        }
-        public override bool HandlePositionalInput => true;
-        private float x, y;
-        protected override void Update()
-        {
-            Rotation_G = InnerLine.Rotation = (MathF.Atan2(y, x) / MathF.PI) * 180.0f;
-            // 从 HitObjectContainer读取hitobject
-            //foreach (DrawableSpinruHitObject obj in HitObjectContainer.Objects)
-            //{
-            //    // obj.Rotation_2; // 旋转（角度）
-            //}
-            base.Update();
-        }
-        protected override bool OnMouseMove(MouseMoveEvent e)
-        {
-            x = e.MousePosition.X - 192.0f;
-            y = e.MousePosition.Y - 192.0f;
-            return base.OnMouseMove(e);
         }
         private void onNewResult(DrawableHitObject judgedObject, JudgementResult result)
         {

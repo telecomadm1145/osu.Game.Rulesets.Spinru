@@ -32,7 +32,7 @@ namespace osu.Game.Rulesets.Spinru.Objects.Drawables
             Size = new Vector2(80);
 
             Origin = Anchor.Centre;
-            Rotation = Math.Atan2(hitObject.Y - 192, hitObject.X - 256);
+            Rotation = HitObject.Rotation;
             Rotation_2 = (Rotation / Math.PI) * 180;
         }
 

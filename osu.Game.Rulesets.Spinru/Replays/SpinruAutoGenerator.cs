@@ -38,7 +38,7 @@ namespace osu.Game.Rulesets.Spinru.Replays
 
             foreach (SpinruHitObject hitObject in Beatmap.HitObjects)
             {
-                var targetAngle = Math.Atan2(hitObject.Y - 192, hitObject.X - 256);
+                var targetAngle = hitObject.Rotation;
                 var judge1 = targetAngle + Math.PI / 2;
                 var judge2 = targetAngle - Math.PI / 2;
 
